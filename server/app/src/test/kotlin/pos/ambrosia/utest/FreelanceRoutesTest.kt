@@ -21,6 +21,7 @@ import org.junit.Before
 import pos.ambrosia.api.configureClients
 import pos.ambrosia.api.configurePayoutAccounts
 import pos.ambrosia.api.configureProjects
+import pos.ambrosia.api.configureTasks
 import pos.ambrosia.api.handler
 import pos.ambrosia.services.PermissionsService
 import pos.ambrosia.utils.ExposedTestDb
@@ -255,6 +256,57 @@ class FreelanceRoutesTest {
         }
 
     @Test
+    fun `task routes create list get update and soft delete tasks`() =
+        testApplication {
+            val authCookies = installAdminAuth()
+            grantFreelancePermissions("admin-test-role", taskPermissions)
+            application {
+                install(ContentNegotiation) { json() }
+                handler()
+                configureTasks()
+            }
+
+            val createTaskResponse =
+                client.post("/freelance/tasks") {
+                    withAuthCookies(authCookies)
+                    header(HttpHeaders.ContentType, "application/json")
+                    setBody(
+                        """{
+                            "name": "Development",
+                            "isBillable": true
+                        }""",
+                    )
+                }
+            val taskId =
+                Json
+                    .parseToJsonElement(createTaskResponse.bodyAsText())
+                    .jsonObject["id"]!!
+                    .jsonPrimitive.content
+            val listTasksResponse = client.get("/freelance/tasks") { withAuthCookies(authCookies) }
+            val getTaskResponse = client.get("/freelance/tasks/$taskId") { withAuthCookies(authCookies) }
+            val updateTaskResponse =
+                client.put("/freelance/tasks/$taskId") {
+                    withAuthCookies(authCookies)
+                    header(HttpHeaders.ContentType, "application/json")
+                    setBody(
+                        """{
+                            "name": "Design",
+                            "isBillable": false
+                        }""",
+                    )
+                }
+            val deleteTaskResponse = client.delete("/freelance/tasks/$taskId") { withAuthCookies(authCookies) }
+            val getDeletedTaskResponse = client.get("/freelance/tasks/$taskId") { withAuthCookies(authCookies) }
+
+            assertEquals(HttpStatusCode.Created, createTaskResponse.status)
+            assertEquals(HttpStatusCode.OK, listTasksResponse.status)
+            assertEquals(HttpStatusCode.OK, getTaskResponse.status)
+            assertEquals(HttpStatusCode.OK, updateTaskResponse.status)
+            assertEquals(HttpStatusCode.NoContent, deleteTaskResponse.status)
+            assertEquals(HttpStatusCode.NotFound, getDeletedTaskResponse.status)
+        }
+
+    @Test
     fun `freelance routes require matching permissions`() =
         testApplication {
             val authCookies = installAdminAuth()
@@ -303,6 +355,13 @@ class FreelanceRoutesTest {
                 "payout_accounts_create",
                 "payout_accounts_update",
                 "payout_accounts_delete",
+            )
+        val taskPermissions =
+            listOf(
+                "tasks_read",
+                "tasks_create",
+                "tasks_update",
+                "tasks_delete",
             )
     }
 }
