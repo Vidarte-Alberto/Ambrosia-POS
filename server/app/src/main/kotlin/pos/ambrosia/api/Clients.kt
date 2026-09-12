@@ -20,7 +20,7 @@ import pos.ambrosia.utils.authorizePermission
 fun Application.configureClients() {
     val clientService = ClientService()
     val projectService = ProjectService()
-    routing { route("/clients") { clients(clientService, projectService) } }
+    routing { route("/freelance/clients") { clients(clientService, projectService) } }
 }
 
 fun Route.clients(
