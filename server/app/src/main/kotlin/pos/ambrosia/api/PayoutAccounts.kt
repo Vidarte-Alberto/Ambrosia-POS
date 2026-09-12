@@ -17,7 +17,7 @@ import pos.ambrosia.utils.authorizePermission
 
 fun Application.configurePayoutAccounts() {
     val payoutAccountService = PayoutAccountService()
-    routing { route("/payout-accounts") { payoutAccounts(payoutAccountService) } }
+    routing { route("/freelance/payout-accounts") { payoutAccounts(payoutAccountService) } }
 }
 
 fun Route.payoutAccounts(payoutAccountService: PayoutAccountService) {

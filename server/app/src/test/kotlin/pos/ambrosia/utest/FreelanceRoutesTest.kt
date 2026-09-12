@@ -181,7 +181,7 @@ class FreelanceRoutesTest {
             }
 
             val createPayoutAccountResponse =
-                client.post("/payout-accounts") {
+                client.post("/freelance/payout-accounts") {
                     withAuthCookies(authCookies)
                     header(HttpHeaders.ContentType, "application/json")
                     setBody(
@@ -199,11 +199,11 @@ class FreelanceRoutesTest {
                     .parseToJsonElement(createPayoutAccountResponse.bodyAsText())
                     .jsonObject["id"]!!
                     .jsonPrimitive.content
-            val listPayoutAccountsResponse = client.get("/payout-accounts") { withAuthCookies(authCookies) }
+            val listPayoutAccountsResponse = client.get("/freelance/payout-accounts") { withAuthCookies(authCookies) }
             val getPayoutAccountResponse =
-                client.get("/payout-accounts/$createdPayoutAccountId") { withAuthCookies(authCookies) }
+                client.get("/freelance/payout-accounts/$createdPayoutAccountId") { withAuthCookies(authCookies) }
             val updatePayoutAccountResponse =
-                client.put("/payout-accounts/$createdPayoutAccountId") {
+                client.put("/freelance/payout-accounts/$createdPayoutAccountId") {
                     withAuthCookies(authCookies)
                     header(HttpHeaders.ContentType, "application/json")
                     setBody(
@@ -214,9 +214,9 @@ class FreelanceRoutesTest {
                     )
                 }
             val deletePayoutAccountResponse =
-                client.delete("/payout-accounts/$createdPayoutAccountId") { withAuthCookies(authCookies) }
+                client.delete("/freelance/payout-accounts/$createdPayoutAccountId") { withAuthCookies(authCookies) }
             val getDeletedPayoutAccountResponse =
-                client.get("/payout-accounts/$createdPayoutAccountId") { withAuthCookies(authCookies) }
+                client.get("/freelance/payout-accounts/$createdPayoutAccountId") { withAuthCookies(authCookies) }
 
             assertEquals(HttpStatusCode.Created, createPayoutAccountResponse.status)
             assertEquals(HttpStatusCode.OK, listPayoutAccountsResponse.status)
@@ -238,13 +238,13 @@ class FreelanceRoutesTest {
             }
 
             val invalidBankResponse =
-                client.post("/payout-accounts") {
+                client.post("/freelance/payout-accounts") {
                     withAuthCookies(authCookies)
                     header(HttpHeaders.ContentType, "application/json")
                     setBody("""{"type":"bank","accountHolder":"Jane Doe"}""")
                 }
             val invalidLightningResponse =
-                client.post("/payout-accounts") {
+                client.post("/freelance/payout-accounts") {
                     withAuthCookies(authCookies)
                     header(HttpHeaders.ContentType, "application/json")
                     setBody("""{"type":"lightning","bankName":"Acme Bank","lightningAddress":"freelancer@getalby.com"}""")
