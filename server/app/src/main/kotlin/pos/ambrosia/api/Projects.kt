@@ -16,7 +16,7 @@ import pos.ambrosia.utils.authorizePermission
 
 fun Application.configureProjects() {
     val projectService = ProjectService()
-    routing { route("/projects") { projects(projectService) } }
+    routing { route("/freelance/projects") { projects(projectService) } }
 }
 
 fun Route.projects(projectService: ProjectService) {
