@@ -592,6 +592,21 @@ data class FreelanceProjectUpsert(
 )
 
 @Serializable
+data class FreelanceTask(
+    val id: String,
+    val name: String,
+    val isBillable: Boolean = true,
+    val isDeleted: Boolean = false,
+    val createdAt: String,
+)
+
+@Serializable
+data class FreelanceTaskUpsert(
+    val name: String,
+    val isBillable: Boolean = true,
+)
+
+@Serializable
 data class PayoutAccount(
     val id: String,
     val type: String,
