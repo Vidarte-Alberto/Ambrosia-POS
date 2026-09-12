@@ -364,12 +364,14 @@ object ExposedTestDb {
     fun seedTask(
         name: String = "Development",
         isBillable: Boolean = true,
+        isDeleted: Boolean = false,
     ): String =
         transaction {
             TaskEntity
                 .new(UUID.randomUUID()) {
                     this.name = name
                     this.isBillable = isBillable
+                    this.isDeleted = isDeleted
                     createdAt = "2026-08-24 12:00:00"
                 }.id.value
                 .toString()
