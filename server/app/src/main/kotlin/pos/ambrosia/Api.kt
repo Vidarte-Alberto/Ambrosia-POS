@@ -54,6 +54,7 @@ import pos.ambrosia.api.configureStoreOrders
 import pos.ambrosia.api.configureSuppliers
 import pos.ambrosia.api.configureSystem
 import pos.ambrosia.api.configureTables
+import pos.ambrosia.api.configureTasks
 import pos.ambrosia.api.configureTicketTemplates
 import pos.ambrosia.api.configureTickets
 import pos.ambrosia.api.configureTimeEntries
@@ -125,6 +126,7 @@ class Api {
         configureClients()
         configurePayoutAccounts()
         configureProjects()
+        configureTasks()
         configureCurrency()
         configureTimeEntries()
         configureFreelanceReports()
