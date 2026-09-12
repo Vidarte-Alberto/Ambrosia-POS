@@ -26,7 +26,7 @@ import pos.ambrosia.utils.getCurrentUser
 
 fun Application.configureTimeEntries() {
     val timeEntryService = TimeEntryService()
-    routing { route("/time-entries") { timeEntries(timeEntryService) } }
+    routing { route("/freelance/time-entries") { timeEntries(timeEntryService) } }
 }
 
 fun Route.timeEntries(timeEntryService: TimeEntryService) {

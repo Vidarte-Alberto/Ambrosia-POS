@@ -60,30 +60,30 @@ class TimeEntriesRouteTest {
 
             assertEquals(
                 HttpStatusCode.Unauthorized,
-                client.get("/time-entries?from=2026-08-17&to=2026-08-23").status,
+                client.get("/freelance/time-entries?from=2026-08-17&to=2026-08-23").status,
             )
-            assertEquals(HttpStatusCode.Unauthorized, client.post("/time-entries").status)
-            assertEquals(HttpStatusCode.Unauthorized, client.put("/time-entries/${UUID.randomUUID()}").status)
-            assertEquals(HttpStatusCode.Unauthorized, client.delete("/time-entries/${UUID.randomUUID()}").status)
+            assertEquals(HttpStatusCode.Unauthorized, client.post("/freelance/time-entries").status)
+            assertEquals(HttpStatusCode.Unauthorized, client.put("/freelance/time-entries/${UUID.randomUUID()}").status)
+            assertEquals(HttpStatusCode.Unauthorized, client.delete("/freelance/time-entries/${UUID.randomUUID()}").status)
 
             assertEquals(
                 HttpStatusCode.Forbidden,
                 client
-                    .get("/time-entries?from=2026-08-17&to=2026-08-23") {
+                    .get("/freelance/time-entries?from=2026-08-17&to=2026-08-23") {
                         withAuthCookies(auth)
                     }.status,
             )
             assertEquals(
                 HttpStatusCode.Forbidden,
-                client.post("/time-entries") { withAuthCookies(auth) }.status,
+                client.post("/freelance/time-entries") { withAuthCookies(auth) }.status,
             )
             assertEquals(
                 HttpStatusCode.Forbidden,
-                client.put("/time-entries/${UUID.randomUUID()}") { withAuthCookies(auth) }.status,
+                client.put("/freelance/time-entries/${UUID.randomUUID()}") { withAuthCookies(auth) }.status,
             )
             assertEquals(
                 HttpStatusCode.Forbidden,
-                client.delete("/time-entries/${UUID.randomUUID()}") { withAuthCookies(auth) }.status,
+                client.delete("/freelance/time-entries/${UUID.randomUUID()}") { withAuthCookies(auth) }.status,
             )
         }
 
@@ -100,7 +100,7 @@ class TimeEntriesRouteTest {
             }
 
             val response =
-                client.post("/time-entries") {
+                client.post("/freelance/time-entries") {
                     withAuthCookies(auth)
                     header(HttpHeaders.ContentType, "application/json")
                     setBody(requestBody(fixture.projectId, fixture.taskId))
@@ -127,10 +127,10 @@ class TimeEntriesRouteTest {
 
             assertEquals(
                 HttpStatusCode.BadRequest,
-                client.get("/time-entries?from=2026-08-17") { withAuthCookies(auth) }.status,
+                client.get("/freelance/time-entries?from=2026-08-17") { withAuthCookies(auth) }.status,
             )
             val response =
-                client.get("/time-entries?from=2026-08-17&to=2026-08-23") {
+                client.get("/freelance/time-entries?from=2026-08-17&to=2026-08-23") {
                     withAuthCookies(auth)
                 }
             assertEquals(HttpStatusCode.OK, response.status)
@@ -153,7 +153,7 @@ class TimeEntriesRouteTest {
             }
 
             val response =
-                client.put("/time-entries/$entryId") {
+                client.put("/freelance/time-entries/$entryId") {
                     withAuthCookies(auth)
                     header(HttpHeaders.ContentType, "application/json")
                     setBody(requestBody(fixture.projectId, fixture.taskId))
@@ -178,11 +178,11 @@ class TimeEntriesRouteTest {
 
             assertEquals(
                 HttpStatusCode.NoContent,
-                client.delete("/time-entries/$unlockedId") { withAuthCookies(auth) }.status,
+                client.delete("/freelance/time-entries/$unlockedId") { withAuthCookies(auth) }.status,
             )
             assertEquals(
                 HttpStatusCode.Conflict,
-                client.delete("/time-entries/$lockedId") { withAuthCookies(auth) }.status,
+                client.delete("/freelance/time-entries/$lockedId") { withAuthCookies(auth) }.status,
             )
         }
 
@@ -199,14 +199,14 @@ class TimeEntriesRouteTest {
 
             assertEquals(
                 HttpStatusCode.BadRequest,
-                client.get("/time-entries/not-a-uuid") { withAuthCookies(auth) }.status,
+                client.get("/freelance/time-entries/not-a-uuid") { withAuthCookies(auth) }.status,
             )
             assertEquals(
                 HttpStatusCode.BadRequest,
-                client.get("/time-entries?from=2026-08-24&to=2026-08-17") { withAuthCookies(auth) }.status,
+                client.get("/freelance/time-entries?from=2026-08-24&to=2026-08-17") { withAuthCookies(auth) }.status,
             )
             val malformedBodyResponse =
-                client.post("/time-entries") {
+                client.post("/freelance/time-entries") {
                     withAuthCookies(auth)
                     header(HttpHeaders.ContentType, "application/json")
                     setBody("{")
@@ -233,7 +233,7 @@ class TimeEntriesRouteTest {
             }
 
             val createdResponse =
-                client.post("/time-entries") {
+                client.post("/freelance/time-entries") {
                     withAuthCookies(auth)
                     header(HttpHeaders.ContentType, "application/json")
                     setBody(requestBody(fixture.projectId, fixture.taskId))
@@ -241,12 +241,12 @@ class TimeEntriesRouteTest {
             assertEquals(HttpStatusCode.Created, createdResponse.status)
             val created = Json.decodeFromString<TimeEntryResponse>(createdResponse.bodyAsText())
 
-            val getResponse = client.get("/time-entries/${created.id}") { withAuthCookies(auth) }
+            val getResponse = client.get("/freelance/time-entries/${created.id}") { withAuthCookies(auth) }
             assertEquals(HttpStatusCode.OK, getResponse.status)
             assertEquals(created.id, Json.decodeFromString<TimeEntryResponse>(getResponse.bodyAsText()).id)
 
             val putResponse =
-                client.put("/time-entries/${created.id}") {
+                client.put("/freelance/time-entries/${created.id}") {
                     withAuthCookies(auth)
                     header(HttpHeaders.ContentType, "application/json")
                     setBody(
@@ -267,11 +267,11 @@ class TimeEntriesRouteTest {
 
             assertEquals(
                 HttpStatusCode.NoContent,
-                client.delete("/time-entries/${created.id}") { withAuthCookies(auth) }.status,
+                client.delete("/freelance/time-entries/${created.id}") { withAuthCookies(auth) }.status,
             )
             assertEquals(
                 HttpStatusCode.NotFound,
-                client.get("/time-entries/${created.id}") { withAuthCookies(auth) }.status,
+                client.get("/freelance/time-entries/${created.id}") { withAuthCookies(auth) }.status,
             )
             transaction {
                 assertNull(TimeEntryEntity.findById(UUID.fromString(created.id)))
@@ -294,7 +294,7 @@ class TimeEntriesRouteTest {
             }
 
             val response =
-                client.post("/time-entries") {
+                client.post("/freelance/time-entries") {
                     withAuthCookies(auth)
                     header(HttpHeaders.ContentType, "application/json")
                     setBody(requestBody(projectId, taskId))
@@ -321,7 +321,7 @@ class TimeEntriesRouteTest {
             }
 
             val response =
-                client.post("/time-entries") {
+                client.post("/freelance/time-entries") {
                     withAuthCookies(auth)
                     header(HttpHeaders.ContentType, "application/json")
                     setBody(requestBody(projectId, taskId))
@@ -345,7 +345,7 @@ class TimeEntriesRouteTest {
             }
 
             val response =
-                client.post("/time-entries") {
+                client.post("/freelance/time-entries") {
                     withAuthCookies(auth)
                     header(HttpHeaders.ContentType, "application/json")
                     setBody(requestBody(fixture.projectId, fixture.taskId))
